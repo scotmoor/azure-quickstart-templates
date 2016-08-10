@@ -26,6 +26,7 @@ my_app_id_URI=$my_app_name"_id"
 # request the user to login. Azure CLI requires an interactive log in. If the user is already logged in, the asking them to login
 # again is effectively a no-op, although since this script is most likely to be run the first time they logon to the VM, they should not 
 # already be logged in.
+echo "******* PLEASE LOGIN *******"
 azure login
 
 sub_count=$(azure account list --json | jq '. | length')

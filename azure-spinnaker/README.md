@@ -12,72 +12,73 @@ This template allows you to create a new VM with an instance of Spinnaker instal
 The template will create two VMs in your subscription. The first is solely responsible for handling setup operations. Once the deployment has completed you may remove this VM and it's associated resoures.
 The second VM wil be the actual instance of Spinnaker. Once the second VM has beend deployed, you will need to remote into the machine, via ssh, to complete the configuration of Spinnaker (see steps below).  
 
-```PowerShell
-.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation 'eastus' -ArtifactsStagingDirectory '[foldername]'
-```
-```bash
-azure-group-deploy.sh -a [foldername] -l eastus -u
-```
-If your sample has artifacts that need to be "staged" for deployment (Configuration Scripts, Nested Templates, DSC Packages) then set the upload switch on the command.
-You can optionally specify a storage account to use, if so the storage account must already exist within the subscription.  If you don't want to specify a storage account
-one will be created by the script (think of this as "temp" storage for AzureRM) and reused by subsequent deployments.
+## How to deploy this template
 
-```PowerShell
-.\Deploy-AzureResourceGroup.ps1 -ResourceGroupLocation 'eastus' -ArtifactsStagingDirectory '100-STARTER-TEMPLATE-with-VALIDATION' -UploadArtifacts 
-```
-```bash
-azure-group-deploy.sh -a 100-STARTER-TEMPLATE-with-VALIDATION -l eastus -u
-```
+### Option 1: Deploy To Azure
+1. Click the "Deploy To Azure" at the top of the README.md. This will create a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
+2. Set the template parameters appropriately and press OK
+3. specify the resource group to deploy Spinnaker to
+4. review and accept the legal terms.
+5. Press "create"
 
-This template deploys a **solution name**. The **solution name** is a **description**
+### Option 2: Deploy via powershell
+1. Modify azuredeploy.parameters.json parameters file accordingly, be aware that this method can expose your local admin credential since it is defined in the parameters file.
 
-`Tags: Tag1, Tag2, Tag3`
+2. Open Powershell command prompt, change folder to your template folder.
 
-## Solution overview and deployed resources
+3. Authenticate to this session
 
-This is an overview of the solution
+  ```powershell
+  Add-AzureRmAccount
+  ```
 
-The following resources are deployed as part of the solution
+4. Create the new Resource Group where your deployment will happen
 
-#### Resource provider 1
+  ```powershell
+  New-AzureRmResourceGroup -Name "myResourceGroupName" -Location "centralus"
+  ```
 
-Description Resource Provider 1
+5. Deploy your template
 
-+ **Resource type 1A**: Description Resource type 1A
-+ **Resource type 1B**: Description Resource type 1B
-+ **Resource type 1C**: Description Resource type 1C
+  ```powershell
+  New-AzureRmResourceGroupDeployment -Name "myDeploymentName" `
+                                     -ResourceGroupName "myResourceGroupName" `
+                                     -Mode Incremental `
+                                     -TemplateFile .\azuredeploy.json `
+                                     -TemplateParameterFile .\azuredeploy.parameters.json `
+                                     -Force -Verbose 
+  ```
 
-#### Resource provider 2
+## POST Deployment consfiguration steps:
+After the deployment has completed, there are some additional configuration steps that must be performed directly on the virtual machine to configure Spinnaker to be able to target Azure
 
-Description Resource Provider 2
+1. First obtain the IP address of the Public IP resource associated with your VM. The name of Public IP resource associated with your VM can be located in the Azure portal by searching for the name of the VM specified in the template parameters followed by "PublicIP"
+    Example: If VM Name = "myspinnakerVM" then Public IP resource = "myspinnakerVMPublicIP"
+2. ssh into the VM where Spinnaker in installed by executing the following command:
 
-+ **Resource type 2A**: Description Resource type 2A
+    ```
+    ssh <admin_username>@<ip address>
+    ```
+    You will be prompted for the password admin username specified in the deployment template parameters
 
-#### Resource provider 3
+3. Once logged on, execute the following command:
 
-Description Resource Provider 3
+    ```
+    sudo bash /opt/spinnaker/config/azure_config/initAzureSpinnaker.sh
+    ```
+    
+    This script above will require you to securely log into you Azure account. When you see the following output in the command window, follow the instructions to complete the login process
+    ```
+    ******* PLEASE LOGIN *******
+    Authenticating...info:    To sign in, use a web browser to open the page https://aka.ms/devicelogin. Enter the code AQDBDK44H to authenticate.
+    ```
 
-+ **Resource type 3A**: Description Resource type 3A
-+ **Resource type 3B**: Description Resource type 3B
+    If you have more than one subscription, you will be asked to verify which subscription to use.
 
-## Prerequisites
+    After completing the login process, the script create the necessary application and Active Directory service principal in your subscription to enable Spinnaker to communicte to your Azure subscription, as well as, to start Spinnaker 
 
-Decscription of the prerequistes for the deployment
+    NOTE: At various points, the script will pause and you will be prompted to manually continue the script, or press Ctl-C to abort the script
 
-## Deployment steps
 
-You can click the "deploy to Azure" button at the beginning of this document or follow the instructions for command line deployment using the scripts in the root of this repo.
-
-## Usage
-
-#### Connect
-
-How to connect to the solution
-
-#### Management
-
-How to manage the solution
-
-## Notes
-
-Solution notes
+## Configuring Port forwarding
+To configure an ssh tunnel, follow the instructions outlined in step 2 of the <a href="http://www.spinnaker.io/docs/creating-a-spinnaker-instance">Creating a Spinnaker Instance</a> document.                     

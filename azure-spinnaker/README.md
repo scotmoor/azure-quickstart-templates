@@ -70,14 +70,13 @@ After the deployment has completed, there are some additional configuration step
     This script above will require you to securely log into you Azure account. When you see the following output in the command window, follow the instructions to complete the login process
     ```
     ******* PLEASE LOGIN *******
-    Authenticating...info:    To sign in, use a web browser to open the page https://aka.ms/devicelogin. Enter the code AQDBDK44H to authenticate.
+    Authenticating...info:    To sign in, use a web browser to open the page https://aka.ms/devicelogin. Enter the code ######### to authenticate.
     ```
+    If you have more than one subscription, you will be asked to verify which subscription to use after logging in.
 
-    If you have more than one subscription, you will be asked to verify which subscription to use.
+    After completing the login process, the script will create the necessary application and Active Directory service principal in your subscription to enable Spinnaker to communicte to your Azure subscription, as well as, to start Spinnaker 
 
-    After completing the login process, the script create the necessary application and Active Directory service principal in your subscription to enable Spinnaker to communicte to your Azure subscription, as well as, to start Spinnaker 
-
-    NOTE: At various points, the script will pause and you will be prompted to manually continue the script, or press Ctl-C to abort the script
+    NOTE: At various points, the script will pause and you will be prompted to manually continue the script by pressing 'Enter'. Or, you may press Ctl-C to abort the script.
 
 
 ## Configuring Port forwarding

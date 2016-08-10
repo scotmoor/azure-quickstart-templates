@@ -15,14 +15,14 @@ The second VM wil be the actual instance of Spinnaker. Once the second VM has be
 ## How to deploy this template
 
 ### Option 1: Deploy To Azure
-1. Click the "Deploy To Azure" at the top of the README.md. This will create a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
+1. Click the **Deploy To Azure** at the top of this README.md. This will create a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
 2. Set the template parameters appropriately and press OK
 3. specify the resource group to deploy Spinnaker to
 4. review and accept the legal terms.
 5. Press "create"
 
 ### Option 2: Deploy via powershell
-1. Modify azuredeploy.parameters.json parameters file accordingly, be aware that this method can expose your local admin credential since it is defined in the parameters file.
+1. Modify ***azuredeploy.parameters.json*** parameters file accordingly, be aware that this method can expose your local admin credential since it is defined in the parameters file.
 
 2. Open Powershell command prompt, change folder to your template folder.
 

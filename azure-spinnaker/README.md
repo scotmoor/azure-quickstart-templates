@@ -15,7 +15,7 @@ The second VM wil be the actual instance of Spinnaker. Once the second VM has be
 ## How to deploy this template
 
 ### Option 1: Deploy To Azure
-1. Click the **Deploy To Azure** at the top of this README.md. This will create a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
+1. Click the **Deploy To Azure** button at the top of this README.md. This will create a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
 2. Set the template parameters appropriately and press OK
 3. specify the resource group to deploy Spinnaker to
 4. review and accept the legal terms.
@@ -59,7 +59,7 @@ After the deployment has completed, there are some additional configuration step
     ```
     ssh <admin_username>@<ip address>
     ```
-    You will be prompted for the password admin username specified in the deployment template parameters
+    You will be prompted for the password for admin user account specified in the deployment template parameters
 
 3. Once logged on, execute the following command:
 
@@ -67,7 +67,7 @@ After the deployment has completed, there are some additional configuration step
     sudo bash /opt/spinnaker/config/azure_config/initAzureSpinnaker.sh
     ```
     
-    This script above will require you to securely log into you Azure account. When you see the following output in the command window, follow the instructions to complete the login process
+    This script will require you to securely log into you Azure account. When you see the following output in the command window, follow the instructions to complete the login process
     ```
     ******* PLEASE LOGIN *******
     Authenticating...info:    To sign in, use a web browser to open the page https://aka.ms/devicelogin. Enter the code ######### to authenticate.

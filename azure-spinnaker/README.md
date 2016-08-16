@@ -7,7 +7,7 @@
 <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-This template deploys a new virtual machine with Spinnaker pre-installed into your subscription. Once deployed, the new instance is ready to be configured to target the Azure platform.
+This template deploys a new virtual machine with Spinnaker pre-installed into your subscription. Once deployed, the new virtual machine is ready to be configured for targeting deployments to the Azure platform.
 
 The template will create two VMs in your subscription. The first is solely responsible for handling setup operations. Once the deployment has completed you may remove this VM and it's associated resoures.
 The second VM wil be the actual instance of Spinnaker, identified by the VM name given during deployment. Once the second VM has beend deployed, you will need to remote into the machine, via ssh, to complete the configuration of Spinnaker (see steps below).  
@@ -15,7 +15,7 @@ The second VM wil be the actual instance of Spinnaker, identified by the VM name
 ## How to deploy this template
 
 ### Option 1: Deploy To Azure
-1. Click the **Deploy To Azure** button at the top of this README.md. This will create a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
+1. Click the **Deploy To Azure** button at the top of this README.md. This will initiate a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
 2. Set the template parameters appropriately and press OK
 3. specify the resource group to deploy in to
 4. review and accept the legal terms.
@@ -50,16 +50,17 @@ The second VM wil be the actual instance of Spinnaker, identified by the VM name
   ```
 
 ## POST Deployment consfiguration steps:
-After the deployment has completed, there are some additional configuration steps that must be performed directly on the virtual machine to configure Spinnaker to be able to target Azure
+After the deployment has completed, there are some additional configuration steps that must be performed directly on the virtual machine to configure Spinnaker for targeting deployments to Azure
 
 1. First obtain the IP address of the Public IP resource associated with your VM. The name of Public IP resource associated with your VM can be located in the Azure portal by searching for the name of the VM specified in the template parameters followed by "PublicIP"
+    
     Example: If VM Name = "myspinnakerVM" then Public IP resource = "myspinnakerVMPublicIP"
 2. ssh into the VM where Spinnaker in installed by executing the following command:
 
     ```
     ssh <admin_username>@<ip address>
     ```
-    You will be prompted for the password for admin user account specified in the deployment template parameters
+    You will be prompted for the password of the admin user account specified in the deployment template parameters
 
 3. Once logged on, execute the following command:
 
@@ -74,7 +75,7 @@ After the deployment has completed, there are some additional configuration step
     ```
     If you have more than one subscription, you will be asked to verify which subscription to use after logging in.
 
-    After completing the login process, the script will create the necessary application and Active Directory service principal in your subscription to enable Spinnaker to communicte to your Azure subscription, as well as, to start Spinnaker 
+    After completing the login process, the script will create the necessary application and Active Directory service principal in your subscription to enable Spinnaker to communicte to your Azure subscription. It will also launch the various Spinnaker services 
 
     NOTE: At various points, the script will pause and you will be prompted to manually continue the script by pressing 'Enter'. Or, you may press Ctl-C to abort the script.
 

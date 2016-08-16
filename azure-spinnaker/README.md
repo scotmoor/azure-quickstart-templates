@@ -7,17 +7,17 @@
 <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-This template allows you to create a new VM with an instance of Spinnaker installed and ready to configure for deploying your application to Azure.
+This template deploys a new virtual machine with Spinnaker pre-installed into your subscription. Once deployed, the new instance is ready to be configured to target the Azure platform.
 
 The template will create two VMs in your subscription. The first is solely responsible for handling setup operations. Once the deployment has completed you may remove this VM and it's associated resoures.
-The second VM wil be the actual instance of Spinnaker. Once the second VM has beend deployed, you will need to remote into the machine, via ssh, to complete the configuration of Spinnaker (see steps below).  
+The second VM wil be the actual instance of Spinnaker, identified by the VM name given during deployment. Once the second VM has beend deployed, you will need to remote into the machine, via ssh, to complete the configuration of Spinnaker (see steps below).  
 
 ## How to deploy this template
 
 ### Option 1: Deploy To Azure
 1. Click the **Deploy To Azure** button at the top of this README.md. This will create a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
 2. Set the template parameters appropriately and press OK
-3. specify the resource group to deploy Spinnaker to
+3. specify the resource group to deploy in to
 4. review and accept the legal terms.
 5. Press "create"
 

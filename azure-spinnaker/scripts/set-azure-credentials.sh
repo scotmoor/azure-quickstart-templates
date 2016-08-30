@@ -129,7 +129,11 @@ fi
 
 # Create the packer storage account
 PACKER_STORAGE_DEPLOYMENT="$my_packer_storage_account-deployment"
-azure group deployment create -g $my_default_resource_group -n "$PACKER_STORAGE_DEPLOYMENT" -f "$my_azure_spinnaker_config_path/packerstorageaccount.json" -p "{\"storage_account_name\": {\"value\":\"$my_packer_storage_account\"}, \"location\":{\"value\": \"\"}}}"
+PACKER_SA_TEMPLATE_FILE="packerstorageacct.json"
+PACKER_SA_TEMPLATE_TARGET="$my_azure_spinnaker_config_path/$PACKER_SA_TEMPLATE_FILE"
+PACKER_SA_TEMPLATE_SOURCE="https://raw.githubusercontent.com/scotmoor/azure-quickstart-templates/master/azure-spinnaker/scripts/$PACKER_SA_TEMPLATE_FILE"
+sudo curl -o $PACKER_SA_TEMPLATE_TARGET $PACKER_SA_TEMPLATE_SOURCE
+azure group deployment create -g $my_default_resource_group -n "$PACKER_STORAGE_DEPLOYMENT" -f "$PACKER_SA_TEMPLATE_TARGET" -p "{\"storage_account_name\": {\"value\":\"$my_packer_storage_account\"}, \"location\":{\"value\": \"\"}}}"
 
 echo " "
 echo "Default Resource Group:" $my_default_resource_group

@@ -112,6 +112,8 @@ echo " "
 my_default_resource_group="SpinnakerDefault"
 my_packer_resource_group="SpinnakerDefault"
 default_location="eastus"
+my_key_vault_name="NYI"
+my_key_vault_resource_group=$my_default_resource_group
 
 # Create the resource group. If it already exists, this call will "update" the Group which in our case will be a no-op
 azure group create $my_default_resource_group $default_location
@@ -133,7 +135,7 @@ PACKER_SA_TEMPLATE_FILE="packerstorageacct.json"
 PACKER_SA_TEMPLATE_TARGET="$my_azure_spinnaker_config_path/$PACKER_SA_TEMPLATE_FILE"
 PACKER_SA_TEMPLATE_SOURCE="https://raw.githubusercontent.com/scotmoor/azure-quickstart-templates/master/azure-spinnaker/scripts/$PACKER_SA_TEMPLATE_FILE"
 sudo curl -o $PACKER_SA_TEMPLATE_TARGET $PACKER_SA_TEMPLATE_SOURCE
-azure group deployment create -g $my_default_resource_group -n "$PACKER_STORAGE_DEPLOYMENT" -f "$PACKER_SA_TEMPLATE_TARGET" -p "{\"storage_account_name\": {\"value\":\"$my_packer_storage_account\"}, \"location\":{\"value\": \"\"}}"
+azure group deployment create -g $my_default_resource_group -n "$PACKER_STORAGE_DEPLOYMENT" -f "$PACKER_SA_TEMPLATE_TARGET" -p "{\"storage_account_name\": {\"value\":\"$my_packer_storage_account\"}, \"location\":{\"value\": \"$default_location\"}}"
 
 echo " "
 echo "Default Resource Group:" $my_default_resource_group
@@ -160,10 +162,10 @@ sed -i s/MY_AZURE_CLIENT_ID/$my_client_id/g $HOME/spinnaker-local.yml
 echo "sed -i s/MY_AZURE_APP_KEY/$my_app_key/g $HOME/spinnaker-local.yml"
 sed -i s/MY_AZURE_APP_KEY/$my_app_key/g $HOME/spinnaker-local.yml
 # TODO: Enable Key vault support 
-#echo "sed -i s/MY_AZURE_RESOURCE_GROUP/$my_key_vault_resource_group/g $HOME/spinnaker-local.yml"
-#sed -i s/MY_AZURE_RESOURCE_GROUP/$my_key_vault_resource_group/g $HOME/spinnaker-local.yml
-#echo "sed -i s/MY_AZURE_KEY_VAULT/$my_key_vault_name/g $HOME/spinnaker-local.yml"
-#sed -i s/MY_AZURE_KEY_VAULT/$my_key_vault_name/g $HOME/spinnaker-local.yml
+echo "sed -i s/MY_AZURE_RESOURCE_GROUP/$my_key_vault_resource_group/g $HOME/spinnaker-local.yml"
+sed -i s/MY_AZURE_RESOURCE_GROUP/$my_key_vault_resource_group/g $HOME/spinnaker-local.yml
+echo "sed -i s/MY_AZURE_KEY_VAULT/$my_key_vault_name/g $HOME/spinnaker-local.yml"
+sed -i s/MY_AZURE_KEY_VAULT/$my_key_vault_name/g $HOME/spinnaker-local.yml
 echo "sed -i s/MY_AZURE_PACKER_RESOURCE_GROUP/$my_packer_resource_group/g $HOME/spinnaker-local.yml"
 sed -i s/MY_AZURE_PACKER_RESOURCE_GROUP/$my_packer_resource_group/g $HOME/spinnaker-local.yml
 echo "sed -i s/MY_AZURE_PACKER_STORAGE_ACCOUNT/$my_packer_storage_account/g $HOME/spinnaker-local.yml"
@@ -193,7 +195,7 @@ echo "Demo Pipeline: " $PIPELINE_NAME
 
 # Create an application in Spinnaker
 echo "Creating default application \"$APP_NAME\" in Spinnaker"
-APP_RESPONSE=sudo curl -X POST --header "Content-Type: application/json" --header "Accept: */*" -d "{\"job\": [ { \"type\": \"createApplication\", \"account\": \"my-azure-account\", \"application\": { \"cloudProviders\": \"azure\", \"instancePort\": \"null\", \"name\": \"$APP_NAME\", \"email\":\"scot.moorhead@outlook.com\" }, \"user\": \"[anonymous]\" }], \"application\": \"$APP_NAME\", \"description\": \"Create Application: $APP_NAME\"}" "http://localhost:8084/applications/$APP_NAME/tasks"
+APP_RESPONSE=sudo curl -X POST --header "Content-Type: application/json" --header "Accept: */*" -d "{\"job\": [ { \"type\": \"createApplication\", \"account\": \"my-azure-account\", \"application\": { \"cloudProviders\": \"azure\", \"instancePort\": \"null\", \"name\": \"$APP_NAME\", \"email\":\"spinnakeruser@outlook.com\" }, \"user\": \"[anonymous]\" }], \"application\": \"$APP_NAME\", \"description\": \"Create Application: $APP_NAME\"}" "http://localhost:8084/applications/$APP_NAME/tasks"
 echo "Demo Application $APP_NAME created"
 
 # Create a load balancer (Azure App Gateway)
@@ -203,7 +205,7 @@ echo "Demo Load Balancer $APP_GATEWAY_NAME created"
 
 
 # Create a pipeline with bake and deploy stage
-CREATE_PIPELINE_DATA="{\"application\":\"$APP_NAME\",\"index\":2,\"keepWaitingPipelines\":false,\"limitConcurrent\":true,\"name\":\"$PIPELINE_NAME\",\"stages\":[{\"baseLabel\":\"release\",\"baseOs\":\"ubuntu\",\"cloudProviderType\":\"azure\",\"extendedAttributes\":{},\"name\":\"Bake\",\"osType\":\"Linux\",\"regions\":[\"eastus\",\"westus\"],\"type\":\"bake\",\"user\":\"[anonymous]\"},{\"clusters\":[{\"account\":\"my-azure-account\",\"application\":\"$APP_NAME\",\"capacity\":{\"max\":1,\"min\":1,\"useSourceCapacity\":false},\"cloudProvider\":\"azure\",\"detail\":\"$PIPELINE_DETAIL\",\"freeFormDetails\":\"$PIPELINE_DETAIL\",\"image\":{\"imageName\":\"\",\"isCustom\":\"true\",\"offer\":\"\",\"ostype\":\"\",\"publisher\":\"\",\"region\":\"$default_location\",\"sku\":\"\",\"uri\":\"\",\"version\":\"\"},\"interestingHealthProviderNames\":[],\"loadBalancerName\":\"$APP_GATEWAY_NAME\",\"name\":\"$APP_NAME-$STACK-$PIPELINE_DETAIL\",\"osConfig\":{\"adminPassword\":\"!Qnti**234\",\"adminUserName\":\"spinnakeruser\"},\"region\":\"$default_location\",\"selectedProvider\":\"azure\",\"sku\":{\"capacity\":1,\"name\":\"Standard_DS1_v2\",\"tier\":\"Standard\"},\"stack\":\"$STACK\",\"type\":\"createServerGroup\",\"upgradePolicy\":\"Manual\",\"user\":\"[anonymous]\",\"viewState\":{\"allImageSelection\":null,\"disableImageSelection\":true,\"disableStrategySelection\":false,\"hideClusterNamePreview\":false,\"imageId\":null,\"instanceProfile\":\"custom\",\"loadBalancersConfigured\":true,\"mode\":\"createPipeline\",\"readOnlyFields\":{},\"securityGroupsConfigured\":true,\"submitButtonLabel\":\"Add\",\"templatingEnabled\":true,\"useAllImageSelection\":false,\"usePreferredZones\":true,\"useSimpleCapacity\":true}}],\"name\":\"Deploy\",\"type\":\"deploy\"}],\"triggers\":[]}"
+CREATE_PIPELINE_DATA="{\"application\":\"$APP_NAME\",\"index\":2,\"keepWaitingPipelines\":false,\"limitConcurrent\":true,\"name\":\"$PIPELINE_NAME\",\"stages\":[{\"baseLabel\":\"release\",\"baseOs\":\"ubuntu\",\"cloudProviderType\":\"azure\",\"extendedAttributes\":{},\"name\":\"Bake\",\"osType\":\"Linux\",\"package\":\"jenkins\",\"regions\":[\"eastus\",\"westus\"],\"type\":\"bake\",\"user\":\"[anonymous]\"},{\"clusters\":[{\"account\":\"my-azure-account\",\"application\":\"$APP_NAME\",\"capacity\":{\"max\":1,\"min\":1,\"useSourceCapacity\":false},\"cloudProvider\":\"azure\",\"detail\":\"$PIPELINE_DETAIL\",\"freeFormDetails\":\"$PIPELINE_DETAIL\",\"image\":{\"imageName\":\"\",\"isCustom\":\"true\",\"offer\":\"\",\"ostype\":\"\",\"publisher\":\"\",\"region\":\"$default_location\",\"sku\":\"\",\"uri\":\"\",\"version\":\"\"},\"interestingHealthProviderNames\":[],\"loadBalancerName\":\"$APP_GATEWAY_NAME\",\"name\":\"$APP_NAME-$STACK-$PIPELINE_DETAIL\",\"osConfig\":{\"adminPassword\":\"!Qnti**234\",\"adminUserName\":\"spinnakeruser\"},\"region\":\"$default_location\",\"selectedProvider\":\"azure\",\"sku\":{\"capacity\":1,\"name\":\"Standard_DS1_v2\",\"tier\":\"Standard\"},\"stack\":\"$STACK\",\"type\":\"createServerGroup\",\"upgradePolicy\":\"Manual\",\"user\":\"[anonymous]\",\"viewState\":{\"allImageSelection\":null,\"disableImageSelection\":true,\"disableStrategySelection\":false,\"hideClusterNamePreview\":false,\"imageId\":null,\"instanceProfile\":\"custom\",\"loadBalancersConfigured\":true,\"mode\":\"createPipeline\",\"readOnlyFields\":{},\"securityGroupsConfigured\":true,\"submitButtonLabel\":\"Add\",\"templatingEnabled\":true,\"useAllImageSelection\":false,\"usePreferredZones\":true,\"useSimpleCapacity\":true}}],\"name\":\"Deploy\",\"type\":\"deploy\"}],\"triggers\":[]}"
 sudo curl -X POST --header "Content-Type: application/json" --header "*/*" -d "$CREATE_PIPELINE_DATA" "http://localhost:8084/pipelines"
 echo "Demo pipelname $PIPELINE_NAME created"
 

@@ -157,7 +157,7 @@ echo " "
 echo "Update Spinnaker configuration file using the credentials set above"
 echo " "
 
-echo "cp $my_azure_spinnaker_config_path/azure_config/spinnaker-local.yml $HOME/spinnaker-local.yml"
+echo "cp $my_azure_spinnaker_config_path/spinnaker-local.yml $HOME/spinnaker-local.yml"
 cp $my_azure_spinnaker_config_path/spinnaker-local.yml $HOME/spinnaker-local.yml
 echo "sed -i s/MY_AZURE_SUBSCRIPTION_ID/$my_subscription_id/g $HOME/spinnaker-local.yml"
 sed -i s/MY_AZURE_SUBSCRIPTION_ID/$my_subscription_id/g $HOME/spinnaker-local.yml

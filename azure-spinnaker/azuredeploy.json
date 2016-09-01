@@ -31,13 +31,20 @@
       "metadata": {
         "description": "Local administrator password, complex password is required, do not use any variation of the password word because it will be rejected."
       }
-    }    
+    },
+    "sourceImageURI": {
+      "type": "string",
+      "defaultValue": "https://azurespinnakertrial.blob.core.windows.net/vhds/azurespin-osDisk.0810160101.vhd",
+      "metadata": {
+        "description": "URI of the source base image to deploy",
+        "required": true
+      } 
+    }   
   },
   "variables": {
     "sourceStorageAccountID": "/subscriptions/56e36159-d2c9-4e73-9051-fde5c631d20c/resourceGroups/azurespinnaker/providers/Microsoft.Storage/storageAccounts/azurespinnakertrial",
-    "sourceImageName": "azurespin-osDisk.0810160101.vhd",
-    "sourceImageURI": "https://azurespinnakertrial.blob.core.windows.net/vhds/azurespin-osDisk.0810160101.vhd",
-    "sourceStorageAccountName": "[substring(split(variables('sourceImageURI'),'.')[0],8)]",
+    "sourceImageName": "azurespin-osDisk.0810160101.vhd",    
+    "sourceStorageAccountName": "[substring(split(parameters('sourceImageURI'),'.')[0],8)]",
     "transferVmName": "ImageTransferVM",
     "customImageName": "azurespin-osDisk.0810160101.vhd",
     "vmCount": 2,
@@ -232,7 +239,7 @@
               ]
             },
             "protectedSettings": {
-              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ','ImageTransfer.ps1 -SourceImage ',variables('sourceImageURI'),' -SourceSAKey ', listKeys(variables('sourceStorageAccountID'), '2015-06-15').key1, ' -DestinationURI https://', variables('StorageAccountName'), '.blob.core.windows.net/vhds', ' -DestinationSAKey ', listKeys(concat('Microsoft.Storage/storageAccounts/', variables('StorageAccountName')), '2015-06-15').key1)]"
+              "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ','ImageTransfer.ps1 -SourceImage ',parameters('sourceImageURI'),' -SourceSAKey ', listKeys(variables('sourceStorageAccountID'), '2015-06-15').key1, ' -DestinationURI https://', variables('StorageAccountName'), '.blob.core.windows.net/vhds', ' -DestinationSAKey ', listKeys(concat('Microsoft.Storage/storageAccounts/', variables('StorageAccountName')), '2015-06-15').key1)]"
             }
           }
         }

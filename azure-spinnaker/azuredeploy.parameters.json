@@ -13,6 +13,9 @@
     },
     "newVmName": {
       "value": "AzureSpinnakerTrialVM"
+    },
+    "sourceImageURI": {
+      "value": "https://azurespinnakertrial.blob.core.windows.net/vhds/azurespin-osDisk.0810160101.vhd"
     }
   }
 }

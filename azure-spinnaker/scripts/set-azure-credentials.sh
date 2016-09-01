@@ -140,8 +140,8 @@ azure group deployment create -g $my_default_resource_group -n "$PACKER_STORAGE_
 #get the latest version of packer
 echo "update version of packer"
 PACKER_INSALLER="packer.zip"
-sudo curl -o $my_azure_spinnaker_config_path  "https://releases.hashicorp.com/packer/0.10.1/packer_0.10.1_linux_amd64.zip"
-sudo unzip packer.zip -d "/usr/bin/packer"
+sudo curl -o $my_azure_spinnaker_config_path/$PACKER_INSALLER  "https://releases.hashicorp.com/packer/0.10.1/packer_0.10.1_linux_amd64.zip"
+sudo unzip $my_azure_spinnaker_config_path/$PACKER_INSALLER -d "/usr/bin" -q
 
 echo " "
 echo "Default Resource Group:" $my_default_resource_group
@@ -181,8 +181,16 @@ echo "sudo bash -c 'cp $HOME/spinnaker-local.yml /opt/spinnaker/config/spinnaker
 sudo bash -c 'cp $HOME/spinnaker-local.yml /opt/spinnaker/config/spinnaker-local.yml'
 echo "sudo bash -c 'cp /opt/spinnaker/config/azure_config/clouddriver.yml /opt/spinnaker/config/clouddriver.yml'"
 sudo bash -c 'cp /opt/spinnaker/config/azure_config/clouddriver.yml /opt/spinnaker/config/clouddriver.yml'
-echo "sudo bash -c 'cp /opt/spinnaker/config/azure_config/rosco.yml /opt/spinnaker/config/rosco.yml'"
-sudo bash -c 'cp /opt/spinnaker/config/azure_config/rosco.yml /opt/spinnaker/config/rosco.yml'
+
+echo " "
+echo "update rosco configuration to use credentails set above"
+echo " "
+# download the latest rosco.yml from the git repo
+ROSCO_CONFIG_SOURCE="https://raw.githubusercontent.com/scotmoor/azure-quickstart-templates/master/azure-spinnaker/scripts/rosco.yml"
+sudo curl -o -o "$my_azure_spinnaker_config_path/rosco.yml" $ROSCO_CONFIG_SOURCE
+# copy the download rosco.yml to the config dir as rosco-local.yml
+echo "sudo bash -c 'cp $my_azure_spinnaker_config_path/rosco.yml /opt/spinnaker/config/rosco-local.yml'"
+sudo bash -c 'cp /opt/spinnaker/config/azure_config/rosco.yml /opt/spinnaker/config/rosco-local.yml'
 
 echo "Start Spinnaker"
 sudo bash -c '/opt/spinnaker/scripts/start_spinnaker.sh'

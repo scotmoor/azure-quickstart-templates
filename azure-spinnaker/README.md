@@ -14,6 +14,15 @@ The second VM wil be the actual instance of Spinnaker, identified by the VM name
 
 ## How to deploy this template
 
+### Prequisite
+Before deploying the the template, you must first copy the base image .vhd to a storage location within in your subscription.
+
+1. Download the base image .vhd from <a href="https://azurespinnakertrial.blob.core.windows.net/vhds/azurespin-osDisk.0810160101.vhd?st=2016-09-01T23%3A27%3A00Z&se=2016-09-02T23%3A27%3A00Z&sp=rl&sv=2015-04-05&sr=b&sig=uS5Tv3B05fez2hJAQ%2BDXykizBSN3nLMR3UCzqH%2FMbpU%3D">here</a>
+2. Upload the .vhd to a container in a storage account within the subscription where you will deploy the template
+  - Be sure to note the path/URI of the uploaded .vhd. You will need to supply this value for the "Source Image URI" parameter
+  
+**NOTE**: The <a href="http://storageexplorer.com">Azure Storage Explorer</a> is a convenient tool for managing storage accounts in your subscription 
+
 ### Option 1: Deploy To Azure
 1. Click the **Deploy To Azure** button at the top of this README.md. This will initiate a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
 2. Set the template parameters appropriately and press OK

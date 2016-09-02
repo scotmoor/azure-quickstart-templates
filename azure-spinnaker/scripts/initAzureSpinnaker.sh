@@ -4,10 +4,11 @@ set -e
 set -o pipefail
 
 SPINNAKER_CONFIG_DIR="/opt/spinnaker/config/azure_config/"
+REPO="https://raw.githubusercontent.com/scotmoor/azure-quickstart-templates/basevm_param/azure-spinnaker/scripts/"
 CRED_FILE="set-azure-credentials.sh"
 INIT_FILE="configure_spinnaker.sh"
-CRED_SOURCE="https://raw.githubusercontent.com/scotmoor/azure-quickstart-templates/base_vmparam/azure-spinnaker/scripts/$CRED_FILE"
-INIT_SOURCE="https://raw.githubusercontent.com/scotmoor/azure-quickstart-templates/base_vmparam/azure-spinnaker/scripts/$CRED_FILE"
+CRED_SOURCE=$REPO$CRED_FILE
+INIT_SOURCE=$REPO$INIT_FILE
 CRED_FULL_PATH=$SPINNAKER_CONFIG_DIR$CRED_FILE
 INIT_FULL_PATH=$SPINNAKER_CONFIG_DIR$INIT_FILE
 

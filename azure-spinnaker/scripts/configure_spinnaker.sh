@@ -4,12 +4,25 @@ APP_NAME=$1
 REGION=$2
 
 if [[ -z "$APP_NAME" ]]; then
-
+    APP_NAME="mytestapp"
 fi
 
-echo "Start Spinnaker"
+if [[ -z "$REGION" ]]; then
+    REGION="eastus"
+fi
+
+echo " "
+echo "Default Application Name: $APP_NAME"
+echo "Default region: $REGION"
+echo " "
+
+echo "Launching Spinnaker....."
 sudo bash -c '/opt/spinnaker/scripts/start_spinnaker.sh'
+
+echo " "
+echo "Waiting for all process to be ready...."
 sleep 30
+echo " "
 
 STACK="st1"
 APPG_DETAIL="frontend"

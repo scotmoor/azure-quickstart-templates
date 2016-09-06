@@ -192,6 +192,15 @@ sudo curl -o "$my_azure_spinnaker_config_path/rosco-local.yml" $ROSCO_CONFIG_SOU
 echo "sudo bash -c 'cp $my_azure_spinnaker_config_path/rosco-local.yml /opt/spinnaker/config/rosco-local.yml'"
 sudo bash -c 'cp /opt/spinnaker/config/azure_config/rosco-local.yml /opt/spinnaker/config/rosco-local.yml'
 
+echo " "
+echo "***************************************"
+echo "Initial setup complete. Press enter to start spinnaker and configure defaults."
+echo "Press Ctl+C to abort"
+echo "***************************************"
+echo " "
+read my_enter
+
+
 #echo "Start Spinnaker"
 sudo bash -c '/opt/spinnaker/scripts/start_spinnaker.sh'
 sleep 30

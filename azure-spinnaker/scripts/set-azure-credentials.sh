@@ -25,10 +25,18 @@ my_app_name="spinnakertrialapp2"
 my_app_key="mysp1nn8k3rtr1al0ff3r"
 my_app_id_URI=$my_app_name"_id"
 
+" "
+"****************************************************"
+"Beginning configuration...."
+"****************************************************"
+" " 
+
 # request the user to login. Azure CLI requires an interactive log in. If the user is already logged in, the asking them to login
 # again is effectively a no-op, although since this script is most likely to be run the first time they logon to the VM, they should not 
 # already be logged in.
 echo "******* PLEASE LOGIN *******"
+echo "Copy the code provided and open the link shown. Paste the code into the field provided"
+echo " "
 azure login
 
 sub_count=$(azure account list --json | jq '. | length')
@@ -52,6 +60,11 @@ if [[ $sub_count -gt 1 ]]; then
     fi 
   fi
 fi
+
+echo "***********"
+echo "Begin Credential setup"
+echo "***********"
+echo " "
 
 my_subscription_id=$(azure account show --json | jq -r '.[0].id')
 my_tenant_id=$(azure account show --json | jq -r '.[0].tenantId')
@@ -87,9 +100,6 @@ else
     sleep 20
     my_app_sp_object_id=$(azure ad sp show --search $my_app_name --json | jq -r '.[0].objectId')
     
-    echo "Assign rights to service principle"
-    echo "azure role assignment create --objectId $my_app_sp_object_id -o Owner -c /subscriptions/$my_subscription_id"
-    azure role assignment create --objectId $my_app_sp_object_id -o Owner -c /subscriptions/$my_subscription_id
   else
     echo " "
     echo "We've encounter an unexpected error; please hit Ctr-C and retry from the beginning"
@@ -97,16 +107,36 @@ else
   fi
 fi
 
+# Need to make sure that the app we are using has access to this subscription
+# AD apps live within a tenant spans subscriptions. Even if we found an existing app that matches, we
+# still need to make sure it can access the subscription
+EXISTING_ASSIGNMENT=$(azure role assignment list --spn "http://$my_app_id_URI/" --json | jq '(map(select(.properties.scope | contains "/subscriptions/$my_subscription_id"))) | .[0].properties.ADObject.displayName')
+if [[ "$EXISTING_ASSIGNMENT"" -ne "$my_app_name"" ]]; then
+  # echo we didn't find an existing role assignment for this app in this subscription so create one
+  echo "Assign rights to service principle"
+  echo "azure role assignment create --objectId $my_app_sp_object_id -o Owner -c /subscriptions/$my_subscription_id"
+  azure role assignment create --objectId $my_app_sp_object_id -o Owner -c /subscriptions/$my_subscription_id
+fi  
+
 my_client_id=$(azure ad sp show --search $my_app_name --json | jq -r '.[0].appId')
 
+echo "***********"
+echo "Credential setup complete"
+echo "***********"
 echo " "
-echo "Subscription ID:" $my_subscription_id
-echo "Tenant ID:" $my_tenant_id
-echo "Client ID:" $my_client_id
-echo "App Key:" $my_app_key
+
+echo "***Subscription ID:" $my_subscription_id
+echo "***Tenant ID:" $my_tenant_id
+echo "***Client ID:" $my_client_id
+echo "***App Key:" $my_app_key
 echo " "
 echo "You can verify the service principal was created properly by running:"
 echo "azure login -u "$my_client_id" --service-principal --tenant $my_tenant_id"
+echo " "
+
+echo "***********"
+echo "Begin Packer setup"
+echo "***********"
 echo " "
 
 my_default_resource_group="SpinnakerDefault"
@@ -143,14 +173,23 @@ PACKER_INSALLER="packer.zip"
 sudo curl -o $my_azure_spinnaker_config_path/$PACKER_INSALLER  "https://releases.hashicorp.com/packer/0.10.1/packer_0.10.1_linux_amd64.zip"
 sudo unzip -o $my_azure_spinnaker_config_path/$PACKER_INSALLER -d "/usr/bin"
 
+echo "***********"
+echo "Packer setup complete"
+echo "***********"
 echo " "
-echo "Default Resource Group:" $my_default_resource_group
 
-echo "Packer Resource Group:" $my_default_resource_group
-echo "Packer Storage Account:" $my_packer_storage_account
+echo "***Default Resource Group:" $my_default_resource_group
+echo "***Packer Resource Group:" $my_default_resource_group
+echo "***Packer Storage Account:" $my_packer_storage_account
 echo " "
 echo "Press enter to continue"
 read my_enter
+
+
+echo "***********"
+echo "Begin configuration update"
+echo "***********"
+echo " "
 
 # Update Spinnaker configuration file with the credentials set above
 echo " "
@@ -165,8 +204,14 @@ echo "Waiting for Spinnaker to shutdown..."
 echo " "
 sleep 15
 
-echo "cp $my_azure_spinnaker_config_path/spinnaker-local.yml $HOME/spinnaker-local.yml"
-cp $my_azure_spinnaker_config_path/spinnaker-local.yml $HOME/spinnaker-local.yml
+echo "Update spinnaker configuration to use credentials set above"
+" "
+#download latest spinnaker-local.yml from git repo
+SPN_LOCAL_CONFIG_SOURCE="https://raw.githubusercontent.com/scotmoor/azure-quickstart-templates/master/azure-spinnaker/scripts/spinnaker-local.yml"
+
+#echo "cp $my_azure_spinnaker_config_path/spinnaker-local.yml $HOME/spinnaker-local.yml"
+#cp $my_azure_spinnaker_config_path/spinnaker-local.yml $HOME/spinnaker-local.yml
+suco curl -o "$HOME/spinnaker-local.yml" $SPN_LOCAL_CONFIG_SOURCE
 echo "sed -i -u s/MY_AZURE_SUBSCRIPTION_ID/$my_subscription_id/g $HOME/spinnaker-local.yml"
 sed -i -u  s/MY_AZURE_SUBSCRIPTION_ID/$my_subscription_id/g $HOME/spinnaker-local.yml
 echo "sed -i -u s/MY_AZURE_TENANT_ID/$my_tenant_id/g $HOME/spinnaker-local.yml"
@@ -200,18 +245,43 @@ sudo curl -o "$my_azure_spinnaker_config_path/rosco-local.yml" $ROSCO_CONFIG_SOU
 echo "sudo bash -c 'cp $my_azure_spinnaker_config_path/rosco-local.yml /opt/spinnaker/config/rosco-local.yml'"
 sudo bash -c 'cp /opt/spinnaker/config/azure_config/rosco-local.yml /opt/spinnaker/config/rosco-local.yml'
 
+echo "***********"
+echo "Configuration update complete"
+echo "***********"
+echo " "
+
+
 echo " "
 echo "***************************************"
-echo "Initial setup complete. Press enter to start spinnaker and configure defaults."
+echo "Initial setup complete. Press enter to start spinnaker and configure initial Spinnaker entities."
 echo "Press Ctl+C to abort"
 echo "***************************************"
 echo " "
 read my_enter
 
+echo "***********"
+echo "Begin Spinnaker setup"
+echo "***********"
+echo " "
 
-#echo "Start Spinnaker"
+echo "***********"
+echo "Starting Spinnaker..."
+echo "***********"
+echo " "
+
 sudo bash -c '/opt/spinnaker/scripts/start_spinnaker.sh'
 sleep 30
+
+echo "***********"
+echo "Spinnaker startup complete"
+echo "***********"
+echo " "
+
+
+echo "***********"
+echo "Begin Spinnaker entities creation"
+echo "***********"
+echo " "
 
 APP_NAME="mydemoapp"
 STACK="st1"
@@ -240,7 +310,23 @@ CREATE_PIPELINE_DATA="{\"application\":\"$APP_NAME\",\"appConfig\":{},\"keepWait
 sudo curl -X POST --header "Content-Type: application/json" --header "*/*" -d "$CREATE_PIPELINE_DATA" "http://localhost:8084/pipelines"
 echo "Demo pipelname $PIPELINE_NAME created"
 
-echo "Spinnaker demo setup complete"
+echo "***********"
+echo "Spinnaker entities creation complete"
+echo "***********"
+echo " "
+
+echo "***********"
+echo "Spinnaker setup complete"
+echo "***********"
+echo " "
+
+
+echo "***********"
+echo "Setup Completed"
+echo "To access Spinnaker, navigate your web browser to http://localhost:9000"
+echo "***********"
+echo " "
+
 
 # TODO
 # Re-enable keyvault

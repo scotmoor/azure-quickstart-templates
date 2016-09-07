@@ -82,7 +82,7 @@ After the deployment has completed, there are some additional configuration step
     ******* PLEASE LOGIN *******
     Authenticating...info:    To sign in, use a web browser to open the page https://aka.ms/devicelogin. Enter the code ######### to authenticate.
     ```
-    If you have more than one subscription, you will be asked to verify which subscription to use after logging in.
+    If you have more than one subscription, you will be asked to specify which subscription to use after logging in by simply typing in the name of the subscription as it appears in the list.
 
     After completing the login process, the script will create the necessary application and Active Directory service principal in your subscription to enable Spinnaker to communicte to your Azure subscription. It will also launch the various Spinnaker services 
 

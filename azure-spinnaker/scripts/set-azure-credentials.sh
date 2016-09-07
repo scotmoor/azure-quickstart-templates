@@ -2,21 +2,21 @@
 
 echo "In order to use Spinnaker with Azure you first create a service principal for Spinnaker to run as and also to manage your azure subscription."
 echo "Background article: https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal/#authenticate-with-password---azure-cli"
-echo "Execute the following commands:"
-echo "    azure login"
-echo "    azure config mode arm"
-echo "    azure account show"
-echo "From above record the 'data: ID' and 'data: Tenant ID' - these will be your subscription ID and tenant ID"
-echo " "
-echo "Create your application in Azure AD"
-echo "    azure ad app create --name 'exampleapp' --home-page 'https://www.contoso.org' --identifier-uris 'https://www.contoso.org/example' --password <Your_Password>"
-echo "From above record the 'data: AppId' - this will be your client ID while the password that was set will be the AppKey"
-echo " "
-echo "Create service principal"
-echo "    azure ad sp create <AppId from previous step>"
-echo " "
-echo "Assign rights to service principal"
-echo "    azure role assignment create --objectId <Object ID from above step> -o Owner -c /subscriptions/{subscriptionId from above step}/"
+#echo "Execute the following commands:"
+#echo "    azure login"
+#echo "    azure config mode arm"
+#echo "    azure account show"
+#echo "From above record the 'data: ID' and 'data: Tenant ID' - these will be your subscription ID and tenant ID"
+#echo " "
+#echo "Create your application in Azure AD"
+#echo "    azure ad app create --name 'exampleapp' --home-page 'https://www.contoso.org' --identifier-uris 'https://www.contoso.org/example' --password <Your_Password>"
+#echo "From above record the 'data: AppId' - this will be your client ID while the password that was set will be the AppKey"
+#echo " "
+#echo "Create service principal"
+#echo "    azure ad sp create <AppId from previous step>"
+#echo " "
+#echo "Assign rights to service principal"
+#echo "    azure role assignment create --objectId <Object ID from above step> -o Owner -c /subscriptions/{subscriptionId from above step}/"
 
 my_spinnaker_config_path="/opt/spinnaker/config"
 my_azure_spinnaker_config_path="$my_spinnaker_config_path/azure_config"
@@ -156,6 +156,14 @@ read my_enter
 echo " "
 echo "Update Spinnaker configuration file using the credentials set above"
 echo " "
+
+echo "Stop all instances of Spinnaker before updating configuration...."
+echo " "
+
+sudo bash -c '/opt/spinnaker/scripts/stop_spinnaker.sh'
+echo "Waiting for Spinnaker to shutdown..."
+echo " "
+sleep 15
 
 echo "cp $my_azure_spinnaker_config_path/spinnaker-local.yml $HOME/spinnaker-local.yml"
 cp $my_azure_spinnaker_config_path/spinnaker-local.yml $HOME/spinnaker-local.yml

@@ -21,7 +21,7 @@ Before deploying the the template, you must first copy the base image .vhd to a 
 2. Upload the .vhd to a container in a storage account within the subscription where you will deploy the template
   - Be sure to note the path/URI of the uploaded .vhd. You will need to supply this value for the "Source Image URI" parameter
   
-**NOTE**: The <a href="http://storageexplorer.com">Azure Storage Explorer</a> is a convenient tool for managing storage accounts in your subscription 
+***NOTE***: The <a href="http://storageexplorer.com">Azure Storage Explorer</a> is a convenient tool for managing storage accounts in your subscription 
 
 ### Option 1: Deploy To Azure
 1. Click the **Deploy To Azure** button at the top of this README.md. This will initiate a new template depoyment in the Azure Portal with the azuredeploy.json template loaded 
@@ -70,6 +70,17 @@ After the deployment has completed, there are some additional configuration step
     ssh <admin_username>@<ip address>
     ```
     You will be prompted for the password of the admin user account specified in the deployment template parameters
+
+
+
+********************
+  ***NOTE***: For the version of the template in this branch, you must first execute the following curl command before continuing:
+  ``` 
+  sudo curl -o /opt/spinnaker/config/azure_config/initAzureSpinnaker.sh https://raw.githubusercontent.com/scotmoor/azure-quickstart-templates/basevm_param/azure-spinnaker/scripts/initAzureSpinnaker.sh
+  ```
+********************
+
+
 
 3. Once logged on, execute the following command:
 

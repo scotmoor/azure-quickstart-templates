@@ -64,7 +64,7 @@
     "vnetSubnetPrefix1": "10.0.0.0/24",
     "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('VirtualNetworkName'))]",
     "SubnetRef": "[concat(variables('VnetID'), '/subnets/', variables('vnetSubnetName1'))]",
-    "projectName": "201-vm-customimage-new-storageaccount",
+    "projectName": "azure-spinnaker",
     "publicIpNames": [
       "[concat(variables('transferVmName'),'PublicIP')]",
       "[concat(parameters('newVmName'),'PublicIP')]"

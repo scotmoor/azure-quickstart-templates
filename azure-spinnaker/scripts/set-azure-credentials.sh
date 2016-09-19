@@ -167,12 +167,6 @@ PACKER_SA_TEMPLATE_SOURCE="https://raw.githubusercontent.com/scotmoor/azure-quic
 sudo curl -o $PACKER_SA_TEMPLATE_TARGET $PACKER_SA_TEMPLATE_SOURCE
 azure group deployment create -g $my_default_resource_group -n "$PACKER_STORAGE_DEPLOYMENT" -f "$PACKER_SA_TEMPLATE_TARGET" -p "{\"storage_account_name\": {\"value\":\"$my_packer_storage_account\"}, \"location\":{\"value\": \"$default_location\"}}"
 
-#get the latest version of packer
-echo "update version of packer"
-PACKER_INSALLER="packer.zip"
-sudo curl -o $my_azure_spinnaker_config_path/$PACKER_INSALLER  "https://releases.hashicorp.com/packer/0.10.1/packer_0.10.1_linux_amd64.zip"
-sudo unzip -o $my_azure_spinnaker_config_path/$PACKER_INSALLER -d "/usr/bin"
-
 echo "***********"
 echo "Packer setup complete"
 echo "***********"

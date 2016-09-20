@@ -45,8 +45,7 @@
     "sourceStorageAccountName": "[substring(split(parameters('sourceImageURI'),'.')[0],8)]",
     "sourceStorageAccountID": "[concat('/subscriptions/56e36159-d2c9-4e73-9051-fde5c631d20c/resourceGroups/azurespinnaker/providers/Microsoft.Storage/storageAccounts/',variables('sourceStorageAccountName'))]",
     "transferVmName": "ImageTransferVM",
-    "sourceContainerArray": "split(variables('sourceImageURI'),'/')",
-    "customImageName": "variables('sourceContainerArray[length(variables('sourceContainerArray') - 1)]')",
+    "customImageName": "[split(parameters('sourceImageURI'),'/')[sub(length(variables('sourceContainerArray')),1)]]",
     "vmCount": 2,
     "vmNames": [
       "[variables('transferVmName')]",

@@ -25,11 +25,11 @@ my_app_name="spinnakertrialapp2"
 my_app_key="mysp1nn8k3rtr1al0ff3r"
 my_app_id_URI=$my_app_name"_id"
 
-" "
-"****************************************************"
-"Beginning configuration...."
-"****************************************************"
-" " 
+echo " "
+echo "****************************************************"
+echo "Beginning configuration...."
+echo "****************************************************"
+echo " " 
 
 # request the user to login. Azure CLI requires an interactive log in. If the user is already logged in, the asking them to login
 # again is effectively a no-op, although since this script is most likely to be run the first time they logon to the VM, they should not 

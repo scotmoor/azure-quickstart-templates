@@ -74,7 +74,7 @@
     "imageOffer": "WindowsServer",
     "osDiskName": "OSDisk",
     "transferVmSize": "Standard_DS1_v2",
-    "vhdStorageAccountContainerName": "vhds",
+    "vhdStorageAccountContainerName": "vhds/spinnaker",
     "customScriptFolder": "CustomScripts",
     "trfCustomScriptFiles": [
       "ImageTransfer.ps1"

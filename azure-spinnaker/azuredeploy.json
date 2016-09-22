@@ -34,7 +34,7 @@
     },
     "sourceImageURI": {
       "type": "string",
-      "defaultValue": "https://azurespinnakertrial.blob.core.windows.net/vhds/azurespin-osDisk.0919160101.vhd",
+      "defaultValue": "https://trialjenkinsazure.blob.core.windows.net/vhds/spinnaker/azurespin-osDisk.0920160101.vhd",
       "metadata": {
         "description": "URI of the source base image to deploy",
         "required": true

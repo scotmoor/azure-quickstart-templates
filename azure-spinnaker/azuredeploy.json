@@ -43,7 +43,7 @@
   },
   "variables": {                    
     "sourceStorageAccountName": "[substring(split(parameters('sourceImageURI'),'.')[0],8)]",
-    "sourceStorageAccountID": "[concat('/subscriptions/56e36159-d2c9-4e73-9051-fde5c631d20c/resourceGroups/azurespinnaker/providers/Microsoft.Storage/storageAccounts/',variables('sourceStorageAccountName'))]",
+    "sourceStorageAccountID": "[concat('/subscriptions/db0fee54-2012-407a-a22c-77a6b79db2f3/resourceGroups/trialjenkinsazure/providers/Microsoft.Storage/storageAccounts/',variables('sourceStorageAccountName'))]",
     "transferVmName": "ImageTransferVM",
     "sourceContainerArray": "[split(parameters('sourceImageURI'),'/')]",    
     "customImageName": "[variables('sourceContainerArray')[sub(length(variables('sourceContainerArray')),1)]]",    

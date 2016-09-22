@@ -34,7 +34,7 @@
     },
     "sourceImageURI": {
       "type": "string",
-      "defaultValue": "https://trialjenkinsazure.blob.core.windows.net/vhds/spinnaker/azurespin-osDisk.0920160101.vhd",
+      "defaultValue": "https://trialspinnakerazure.blob.core.windows.net/vhds/azurespin-osDisk.0920160101.vhd",
       "metadata": {
         "description": "URI of the source base image to deploy",
         "required": true
@@ -43,7 +43,7 @@
   },
   "variables": {                    
     "sourceStorageAccountName": "[substring(split(parameters('sourceImageURI'),'.')[0],8)]",
-    "sourceStorageAccountID": "[concat('/subscriptions/db0fee54-2012-407a-a22c-77a6b79db2f3/resourceGroups/trialjenkinsazure/providers/Microsoft.Storage/storageAccounts/',variables('sourceStorageAccountName'))]",
+    "sourceStorageAccountID": "[concat('/subscriptions/db0fee54-2012-407a-a22c-77a6b79db2f3/resourceGroups/trialspinnakerazure/providers/Microsoft.Storage/storageAccounts/',variables('sourceStorageAccountName'))]",
     "transferVmName": "ImageTransferVM",
     "sourceContainerArray": "[split(parameters('sourceImageURI'),'/')]",    
     "customImageName": "[variables('sourceContainerArray')[sub(length(variables('sourceContainerArray')),1)]]",    
@@ -74,7 +74,7 @@
     "imageOffer": "WindowsServer",
     "osDiskName": "OSDisk",
     "transferVmSize": "Standard_DS1_v2",
-    "vhdStorageAccountContainerName": "vhds/spinnaker",
+    "vhdStorageAccountContainerName": "vhds",
     "customScriptFolder": "CustomScripts",
     "trfCustomScriptFiles": [
       "ImageTransfer.ps1"
